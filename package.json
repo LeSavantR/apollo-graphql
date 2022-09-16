@@ -1,0 +1,20 @@
+{
+  "name": "apollo-graphql",
+  "version": "1.0.0",
+  "description": "Project start",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "json": "json-server --watch db.json",
+    "start": "npx nodemon index.js"
+  },
+  "author": "LeSavantR",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.10.2",
+    "axios": "^0.27.2",
+    "graphql": "^16.6.0",
+    "json-server": "^0.17.0",
+    "uuid": "^9.0.0"
+  }
+}
