@@ -1,11 +1,13 @@
 import { ApolloServer, AuthenticationError, gql, UserInputError } from 'apollo-server';
+import jwt from 'jsonwebtoken';
 import './db.js';
 import Person from './models/person.js';
 import User from './models/user.js';
-import jwt from 'jsonwebtoken';
+import { PubSub } from 'graphql'
 
 const JWT_SECRET = 'AQUI_TU_PALABRA_SECRETA_PARA_GENERAR_TOKENS_SEGUROS'
 
+const pubsub = new PubSub()
 // Type Definitions GraphQL
 const typeDef = gql`
   enum YesNo {
@@ -66,6 +68,10 @@ const typeDef = gql`
     addAsFriend(
       name: String!
     ): User
+  }
+
+  type Subscription {
+    personAdded: Person!
   }
 `;
 
@@ -175,6 +181,11 @@ const resolver = {
       };
     },
   },
+  Subscription: {
+    personAdded: {
+      subscribe: () => {}
+    }
+  }
 };
 
 // Instance for ApolloServer
