@@ -3,11 +3,15 @@ import jwt from 'jsonwebtoken';
 import './db.js';
 import Person from './models/person.js';
 import User from './models/user.js';
-import { PubSub } from 'graphql'
+import { PubSub } from 'graphql-subscriptions'
 
 const JWT_SECRET = 'AQUI_TU_PALABRA_SECRETA_PARA_GENERAR_TOKENS_SEGUROS'
 
 const pubsub = new PubSub()
+const SUBS_EVENT = {
+  PERSON_ADDED: 'PERSON_ADDED'
+}
+
 // Type Definitions GraphQL
 const typeDef = gql`
   enum YesNo {
@@ -111,6 +115,7 @@ const resolver = {
         })
       }
 
+      pubsub.publish(SUBS_EVENT.PERSON_ADDED, { personAdded: person})
       return person
     },
     editPhone: async (root, args) => {
@@ -183,7 +188,7 @@ const resolver = {
   },
   Subscription: {
     personAdded: {
-      subscribe: () => {}
+      subscribe: () => pubsub.asyncIterator([SUBS_EVENT.PERSON_ADDED])
     }
   }
 };
@@ -204,4 +209,6 @@ const server = new ApolloServer({
 })
 
 // Execution
-server.listen().then(({url}) => {console.log(`Server ready at ${url}`)})
+server.listen().then(({ url, subscriptionsUrl }) => {
+  console.log(`Server ready at ${url}`)
+})
