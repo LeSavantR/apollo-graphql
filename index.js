@@ -85,12 +85,12 @@ const resolver = {
   Query: {
     personCount: () => Person.collection.countDocuments(),
     allPersons: async (root, args) => {
-      if (!args.phone) return Person.find({})
-      return Person.find({ phone: { $exists: args.phone === 'YES' } })
+      if (!args.phone) return await Person.find({})
+      return await Person.find({ phone: { $exists: args.phone === 'YES' } })
     },
-    findPerson: (root, args) => {
+    findPerson: async (root, args) => {
       const { name } = args;
-      return Person.findOne({ name })
+      return await Person.findOne({ name })
     },
     me: (root, args, context) => {
       return context.currentUser
@@ -209,6 +209,6 @@ const server = new ApolloServer({
 })
 
 // Execution
-server.listen().then(({ url, subscriptionsUrl }) => {
+server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
